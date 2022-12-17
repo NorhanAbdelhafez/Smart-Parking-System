@@ -3,11 +3,12 @@
    
    https://wokwi.com/arduino/projects/322410731508073042
 */
-#define echoPin 12 // attach pin D2 Arduino to pin Echo of HC-SR04
-#define trigPin 13 //attach pin D3 Arduino to pin Trig of HC-SR04
-#define distanceFromUltrasonic2
+#define echoPin 12 // attach pin D2 Arduino to pin Echo of HC-SR04 -> digital pin
+#define trigPin 13 //attach pin D3 Arduino to pin Trig of HC-SR04 ->digital pin
+#define maxDistanceFromUltrasonic2
+#define LEDPerGarageSpotPins[6] ={}
 // defines variables
-long duration; // variable for the duration of sound wave travel
+int duration; // variable for the duration of sound wave travel
 int distance; // variable for the distance measurement
 int availableGarageSpots[6] = {0,0,0,0,0,0};
 void setup() {
@@ -48,6 +49,16 @@ void loop() {
   delay(50000);
 }
 
+void turnOnGarageSpotLEDs(){
+   for (int index =0;index<6;index++){
+     if (availableGarageSpots[index]==0){
+       digitalWrite(LEDPerGarageSpotPins[index], HIGH);
+     }
+     else {
+       digitalWrite(LEDPerGarageSpotPins[index], LOW);
+     }
+   }
+}
 bool checkIfGarageIsFull(){
    int availableSpot = findEmptySpot();
    if (availableSpot ==-1){
@@ -63,5 +74,3 @@ int findEmptySpot(){
   }
   return -1;
 }
-
-
