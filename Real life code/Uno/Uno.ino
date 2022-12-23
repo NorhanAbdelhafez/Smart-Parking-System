@@ -87,7 +87,6 @@ float dis_from_ultrasonic1()
 //______________________________main logic ________________________________
 const int number_of_parking_slots =6;
 int free_S[number_of_parking_slots] = {0};
-long time[number_of_parking_slots]={0};
 int free_count =number_of_parking_slots;
 float distance_threshhold = 35.0;
 int first_free_index()
@@ -102,11 +101,18 @@ int first_free_index()
   }
 }
 
-void update_system_param(int index)
+void update_system_param(int index, String status)
 {
-  free_S[index]=1;
-  time[index]= millis();
-  free_count--;
+  if(status == "in")
+  {
+    free_S[index]=1;
+    free_count--;
+  }
+  else if(status == "out")
+  {
+    free_S[index]=0;
+    free_count++;
+  }
 }
 void main_logic()
 {
@@ -120,8 +126,9 @@ void main_logic()
           lcd_loop(s1 , s2);
           if(keypad_loop()==String(index))
           {
-              connectBetweenMegaAndArduino(index);
-              update_system_param(index-1);
+              send_data_to_mega(index);
+              update_system_param(index-1 , "in");
+              recive_data_from_mega();
               lcd.clear();
               lcd_loop("Welcome , go to" , "slote "+String(index));
               delay(5000);
@@ -142,8 +149,15 @@ void main_logic()
 //___________________________________________________________________
 
 //______________Connection between mega and arduino__________________
-void connectBetweenMegaAndArduino(int indexOfCar){
+void send_data_to_mega(int indexOfCar){
   Serial.write(indexOfCar);
+}
+void recive_data_from_mega(){
+ if (Serial.available()){
+    char s = Serial.read();
+     int ind = s -'0';
+     update_system_param(ind , "out");
+ }  
 }
 //___________________________________________________________________
 void setup() 
@@ -155,9 +169,5 @@ void setup()
 
 void loop() 
 { 
-  //lcd_loop("Hi, helloooooooooo" , keypad_loop());
-  //Serial.println(dis_from_ultrasonic1());
-
-main_logic();
-
+  main_logic();
 } 
