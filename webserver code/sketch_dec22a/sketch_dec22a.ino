@@ -633,7 +633,7 @@ unsigned long timerDelay = 10000;
 //____________________transmitting data from mega to esp____________________
 
 const int number_of_parking_slots =6;
-int esp_out_slots[6]={23,24,1,3,21,19};
+int esp_out_slots[6]={23,22,1,3,21,19};
 int mega_in_slots[6]={18,5,17,16,4,2};
 
 int free_count =number_of_parking_slots;

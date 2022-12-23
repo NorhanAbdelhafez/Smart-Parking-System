@@ -1,3 +1,6 @@
+#include <SoftwareSerial.h>
+
+
 //_______________________________motors______________________________________
 int in1A = 2;
 int in2A = 3;
@@ -117,7 +120,7 @@ void send_data_to_Uno(int ind)
 }
 void get_data_from_esp(){
   for(int i=0 ; i<number_of_parking_slots ; i++){
-    if(digitalRead(esp_In_slots[i]) != free_S[i] &&digitalRead(mega_in_slots[i])==LOW)
+    if(digitalRead(esp_In_slots[i]) != free_S[i] &&digitalRead(mega_Out_slots[i])==LOW)
     {
       update_system_param(i , "out");
       send_data_to_Uno(i);
