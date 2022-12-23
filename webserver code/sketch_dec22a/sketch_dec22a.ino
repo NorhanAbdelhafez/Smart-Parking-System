@@ -678,6 +678,7 @@ get_data_from_mega();
 }
 //__________________end section_______________
 void setup(){
+  setup_transmitting_data();
   Serial.begin(115200);
  
   WiFi.begin(ssid, password);
