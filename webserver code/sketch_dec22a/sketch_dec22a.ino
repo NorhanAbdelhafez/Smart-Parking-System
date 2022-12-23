@@ -599,11 +599,10 @@ width: 22%;
 
 
 
-const char* ssid = "galaxi r1";
-const char* password =  "88888888";
+const char* ssid = "Nora_EXT";
+const char* password =  "KiKo201214*";
 const char* input_parameter2 = "input_integer";
 String input_message;
- 
 AsyncWebServer server1(80);
 AsyncWebServer server2(81);
 
@@ -631,55 +630,48 @@ AsyncEventSource events("/events");
 unsigned long lastTime = 0;
 unsigned long timerDelay = 10000;
  
-//____________________transmitting data from mega to esp
+//____________________transmitting data from mega to esp____________________
+
 const int number_of_parking_slots =6;
-int esp_parking_slots[6]={23,24,1,3,21,19};
-int mega_parking_slots[6]={18,5,17,16,4,2};
+int esp_out_slots[6]={23,24,1,3,21,19};
+int mega_in_slots[6]={18,5,17,16,4,2};
+
 int free_count =number_of_parking_slots;
 int free_S[number_of_parking_slots] = {0};
 
 void setup_transmitting_data(){
   for (int index=0;index<number_of_parking_slots;index++){
-   pinMode(esp_parking_slots[index],OUTPUT);    
-   pinMode(mega_parking_slots[index],INPUT);
+   pinMode(esp_out_slots[index],OUTPUT);    
+   pinMode(mega_in_slots[index],INPUT);
    }  
 }
 
-void update_esp_system(){
-  for(int i=0;i<number_of_parking_slots;i++){
-          Serial.print(free_S [i]);
-
-  if(input_message != "" )
-  {
-      free_S [input_message[0]-'0']=0;  
- 
-      free_count++;
-      
-      
-  }
-  }
-Serial.println(" ");
- }
- void update_maga()
- {
-for(int i= 0 ; i <number_of_parking_slots ; i++ ) 
-{
-  digitalWrite(esp_parking_slots[i],bool(free_S[i]) );
-}  
-}
 void get_data_from_mega(){
   for(int i=0;i<number_of_parking_slots;i++){
-    if(digitalRead(mega_parking_slots[i])!=free_S[i]){
-      free_S[i]=digitalRead(mega_parking_slots[i]);
+    if(digitalRead(mega_in_slots[i])!=free_S[i] &&digitalRead(mega_in_slots[i])==HIGH ){
+      free_S[i]=1;
       free_count--;
     }
   }
 }
+void send_data_to_mega(){
+  for(int i=0; i<number_of_parking_slots ;i++){
+    if(free_S[i])
+    digitalWrite(esp_out_slots[i],HIGH);
+    else
+    digitalWrite(esp_out_slots[i],LOW);
+  }
+}
+
 void main_logic()
 {
-update_esp_system();
-update_maga();
-get_data_from_mega();
+  get_data_from_mega();
+  send_data_to_mega();
+  if(input_message != "" )
+    {
+       free_S [(input_message[0]-'0')-1]=0;  
+       free_count++;  
+    }
 }
 //__________________end section_______________
 void setup(){
