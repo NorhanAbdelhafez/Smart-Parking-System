@@ -633,11 +633,49 @@ unsigned long timerDelay = 10000;
 //____________________transmitting data from mega to esp
 int esp_parking_slots[6]={23,24,1,3,21,19};
 int mega_parking_slots[6]={18,5,17,16,4,2};
-for (int index=0;index<6;index++){
-      
-    
+int free_count =number_of_parking_slots;
+int free_S[number_of_parking_slots] = {0};
+const int number_of_parking_slots =6;
+long time[number_of_parking_slots]={0};
+
+void setup_transmitting_data(){
+  for (int index=0;index<number_of_parking_slots;index++){
+   pinMode(esp_parking_slots[index],OUTPUT);    
+   pinMode(mega_parking_slots[index],INPUT);
+   }  
 }
 
+void update_esp_system(){
+  for(int i=0;i<number_of_parking_slots;i++){
+  if(input_message != "" )
+  {
+      free_S [input_message[0]-'0']=0;   
+      free_count++;
+      
+  }
+  }
+}
+ void update_maga()
+ {
+for(int i= 0 ; i <number_of_parking_slots ; i++ ) 
+{
+  digitalWrite(esp_parking_slots[i],bool(free_S[i]) );
+}  
+}
+void get_data_from_mega(){
+  for(int i=0;i<number_of_parking_slots;i++){
+    if(digitalRead(mega_parking_slots[i])!=free_S[i]){
+      free_S[i]=digitalRead(mega_parking_slots[i]);
+      free_count--;
+    }
+  }
+}
+void main_logic()
+{
+update_esp_system();
+update_maga();
+get_data_from_mega();
+}
 //__________________end section_______________
 void setup(){
   Serial.begin(115200);
@@ -691,9 +729,9 @@ void loop() {
   // Serial.printf("slot6: ", slot6);
   // Serial.printf("number of busy slots: ", busySlots);
   // Serial.println();
+   main_logic();
 
-
-
+/*
   events.send("test",NULL,millis());
   if(slot1==1) {
     events.send(String(1).c_str(),"empty",millis());
@@ -737,5 +775,5 @@ void loop() {
   }
 
   events.send(String(busySlots).c_str(),"totlabusy",millis());
-
+*/
 }

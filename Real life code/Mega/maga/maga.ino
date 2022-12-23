@@ -113,8 +113,8 @@ if (Serial.available()){
 
 //__________________________________________________
 //_______________trainmitting data to esp__________________________
-int mega_parking_slots[] = {48,49,50,51,52,53};
-int esp_parking_slots[]={47,46,45,44,43,42};
+int mega_parking_slots[] ={47,46,45,44,43,42};
+int esp_parking_slots[]= {48,49,50,51,52,53};
 void setup_transmitting_data(){
   for (int index=0;index<6;index++){
    pinMode(esp_parking_slots[index],INPUT);    
