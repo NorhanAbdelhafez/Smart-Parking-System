@@ -114,6 +114,13 @@ if (Serial.available()){
 //__________________________________________________
 //_______________trainmitting data to esp__________________________
 int mega_parking_slots[] = {48,49,50,51,52,53};
+int esp_parking_slots[]={47,46,45,44,43,42};
+void setup_transmitting_data(){
+  for (int index=0;index<6;index++){
+   pinMode(esp_parking_slots[index],INPUT);    
+   pinMode(mega_parking_slots[index],OUTPUT);
+   }  
+}
 void send_data_to_esp(){
   for(int i=0;i<number_of_parking_slots;i++){
     if(free_S[i])
@@ -122,7 +129,6 @@ void send_data_to_esp(){
     digitalWrite(mega_parking_slots[i],LOW);
   }
 }
-int esp_parking_slots[]={47,46,45,44,43,42};
 int changes_in_esp_parking_slots[6]={0};
 void get_data_from_esp(){
   for(int i=0;i<number_of_parking_slots;i++){
@@ -141,6 +147,7 @@ void setup() {
   // put your setup code here, to run once:
 Serial.begin(9600);
 motor_setup();
+setup_transmitting_data();
 
 }
 

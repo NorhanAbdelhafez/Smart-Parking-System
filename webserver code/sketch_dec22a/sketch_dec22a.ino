@@ -630,7 +630,15 @@ AsyncEventSource events("/events");
 unsigned long lastTime = 0;
 unsigned long timerDelay = 10000;
  
+//____________________transmitting data from mega to esp
+int esp_parking_slots[6]={23,24,1,3,21,19};
+int mega_parking_slots[6]={18,5,17,16,4,2};
+for (int index=0;index<6;index++){
+      
+    
+}
 
+//__________________end section_______________
 void setup(){
   Serial.begin(115200);
  
