@@ -602,6 +602,7 @@ width: 22%;
 const char* ssid = "galaxi r1";
 const char* password =  "88888888";
 const char* input_parameter2 = "input_integer";
+String input_message;
  
 AsyncWebServer server1(80);
 AsyncWebServer server2(81);
@@ -631,12 +632,11 @@ unsigned long lastTime = 0;
 unsigned long timerDelay = 10000;
  
 //____________________transmitting data from mega to esp
+const int number_of_parking_slots =6;
 int esp_parking_slots[6]={23,24,1,3,21,19};
 int mega_parking_slots[6]={18,5,17,16,4,2};
 int free_count =number_of_parking_slots;
 int free_S[number_of_parking_slots] = {0};
-const int number_of_parking_slots =6;
-long time[number_of_parking_slots]={0};
 
 void setup_transmitting_data(){
   for (int index=0;index<number_of_parking_slots;index++){
@@ -647,14 +647,19 @@ void setup_transmitting_data(){
 
 void update_esp_system(){
   for(int i=0;i<number_of_parking_slots;i++){
+          Serial.print(free_S [i]);
+
   if(input_message != "" )
   {
-      free_S [input_message[0]-'0']=0;   
+      free_S [input_message[0]-'0']=0;  
+ 
       free_count++;
+      
       
   }
   }
-}
+Serial.println(" ");
+ }
  void update_maga()
  {
 for(int i= 0 ; i <number_of_parking_slots ; i++ ) 
@@ -707,7 +712,6 @@ void setup(){
 
 
   server2.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-    String input_message;
     String input_parameter;
     input_message = request->getParam(input_parameter2)->value();
     input_parameter = input_parameter2;
