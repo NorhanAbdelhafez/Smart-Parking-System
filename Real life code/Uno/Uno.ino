@@ -41,8 +41,11 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 String keypad_loop()
 {
   
-  char key = keypad.getKey();
+  char key = ' ';
+  key = keypad.getKey();
   if (key) {
+    Serial.println(key);
+
     lcd.clear();
     String s ="";
     s+=key;
@@ -117,9 +120,11 @@ void main_logic()
           lcd_loop(s1 , s2);
           if(keypad_loop()==String(index))
           {
-              //connectBetweenMegaAndArduino(index);
+              connectBetweenMegaAndArduino(index);
               update_system_param(index-1);
-
+              lcd.clear();
+              lcd_loop("Welcome , go to" , "slote "+String(index));
+              delay(5000);
 
           }
 
@@ -137,9 +142,9 @@ void main_logic()
 //___________________________________________________________________
 
 //______________Connection between mega and arduino__________________
-//void connectBetweenMegaAndArduino(int indexOfCar){
-  //Serial.write(indexOfCar);
-//}
+void connectBetweenMegaAndArduino(int indexOfCar){
+  Serial.write(indexOfCar);
+}
 //___________________________________________________________________
 void setup() 
 { 
@@ -150,8 +155,9 @@ void setup()
 
 void loop() 
 { 
-//  lcd_loop("Hi, helloooooooooo" , keypad_loop());
-//  Serial.println(dis_from_ultrasonic1());
+  //lcd_loop("Hi, helloooooooooo" , keypad_loop());
+  //Serial.println(dis_from_ultrasonic1());
 
 main_logic();
+
 } 
