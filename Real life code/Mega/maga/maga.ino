@@ -82,8 +82,21 @@ float dis_from_ultrasonic2()
 int mega_Out_slots[] ={47,46,45,44,43,42};
 int esp_In_slots[]= {48,49,50,51,52,53};
 const int number_of_parking_slots =6;
-int free_S[number_of_parking_slots] = {0};
+int free_S[number_of_parking_slots] = {0,0,0,0,0,0};
 int free_count =number_of_parking_slots;
+
+void print_arr()
+{
+ Serial.print("Start ");
+  for(int i = 0 ; i < 6 ; i++)
+  {
+    Serial.print(free_S[i]);
+  }
+ Serial.print("free : ");
+  Serial.println(free_count);
+
+}
+
 
 void update_system_param(int index, String status)
 {
@@ -120,11 +133,12 @@ void send_data_to_Uno(int ind)
 }
 void get_data_from_esp(){
   for(int i=0 ; i<number_of_parking_slots ; i++){
+    //Serial.println(digitalRead(esp_In_slots[i]));
     if(digitalRead(esp_In_slots[i]) != free_S[i] &&digitalRead(mega_Out_slots[i])==LOW)
     {
       update_system_param(i , "out");
       send_data_to_Uno(i);
-      open_motor_B(5000);
+      //open_motor_B(5000);
     }
   }
 }
@@ -135,16 +149,23 @@ void get_data_from_esp(){
 
 void main_logic()
 {
-  get_data_from_esp();
-  send_data_to_esp();
   if (Serial.available())
   {
     char s = Serial.read();
+    
     int ind = s -'0';
-    open_motor_A(5000);
-    update_system_param(ind-1, "in");
- }
+    //open_motor_A(5000);
+    if(ind >=1 && ind <=6){
+      update_system_param(ind-1, "in");
+       Serial.println(ind);
+       print_arr();
 
+    
+    }
+    
+ }
+send_data_to_esp();
+ get_data_from_esp();
 }
 
 //__________________________________________________

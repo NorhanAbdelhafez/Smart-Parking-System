@@ -638,7 +638,17 @@ int mega_in_slots[6]={18,5,17,16,4,2};
 
 int free_count =number_of_parking_slots;
 int free_S[number_of_parking_slots] = {0};
+void print_arr()
+{
+ Serial.print("Start ");
+  for(int i = 0 ; i < 6 ; i++)
+  {
+    Serial.print(free_S[i]);
+  }
+ Serial.print("free : ");
+  Serial.println(free_count);
 
+}
 void setup_transmitting_data(){
   for (int index=0;index<number_of_parking_slots;index++){
    pinMode(esp_out_slots[index],OUTPUT);    
@@ -649,8 +659,10 @@ void setup_transmitting_data(){
 void get_data_from_mega(){
   for(int i=0;i<number_of_parking_slots;i++){
     if(digitalRead(mega_in_slots[i])!=free_S[i] &&digitalRead(mega_in_slots[i])==HIGH ){
+      
       free_S[i]=1;
       free_count--;
+      print_arr();
     }
   }
 }
@@ -665,13 +677,29 @@ void send_data_to_mega(){
 
 void main_logic()
 {
-  get_data_from_mega();
-  send_data_to_mega();
-  if(input_message != "" )
-    {
-       free_S [(input_message[0]-'0')-1]=0;  
-       free_count++;  
+  if (Serial.available())
+  {
+    char s = Serial.read();
+    
+    int ind = s -'0';
+    //open_motor_A(5000);
+    Serial.println(ind);
+    if(ind >=1 && ind <=6){
+      free_S[ind-1]=0;  
+      free_count++;  
+      print_arr();
+      
     }
+  }
+  send_data_to_mega();
+  get_data_from_mega();
+
+  //if(input_message != "" )
+   // {
+   //    free_S [(input_message[0]-'0')-1]=0;  
+   //    free_count++;  
+   //    print_arr();
+   // }
 }
 //__________________end section_______________
 void setup(){
@@ -679,7 +707,7 @@ void setup(){
   Serial.begin(115200);
  
   WiFi.begin(ssid, password);
- 
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi..");
